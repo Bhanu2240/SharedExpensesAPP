@@ -8,7 +8,17 @@ const createExpense = async (req, res) => {
       groupId,
       paidById,
       expenseDate,
+      participants,
     } = req.body;
+    if (!participants || participants.length === 0) {
+  return res.status(400).json({
+    success: false,
+    message: "Participants are required",
+  });
+}
+
+    const shareAmount =
+      Number(amount) / participants.length;
 
     const expense = await prisma.expense.create({
       data: {
@@ -17,6 +27,16 @@ const createExpense = async (req, res) => {
         groupId,
         paidById,
         expenseDate: new Date(expenseDate),
+
+        participants: {
+          create: participants.map((userId) => ({
+            userId,
+            shareAmount,
+          })),
+        },
+      },
+      include: {
+        participants: true,
       },
     });
 

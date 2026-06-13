@@ -5,6 +5,7 @@ const {
   getMyGroups,
     addMember,
     getGroupMembers,
+    getBalances,
 } = require("../controllers/group.controller");
 
 const protect = require("../middlewares/auth.middleware");
@@ -22,5 +23,7 @@ router.post("/:groupId/members", protect, addMember);
 
 // Get Group Members
 router.get("/:groupId/members", protect, getGroupMembers);
+
+router.get("/:groupId/balances", protect,getBalances);
 
 module.exports = router;

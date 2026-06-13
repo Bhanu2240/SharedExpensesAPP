@@ -114,10 +114,67 @@ const getGroupMembers = async (req, res) => {
     });
   }
 };
+const getBalances = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+
+    const expenses = await prisma.expense.findMany({
+      where: { groupId },
+      include: {
+        participants: true,
+        paidBy: true,
+      },
+    });
+
+    const balances = {};
+
+    for (const expense of expenses) {
+
+      if (!balances[expense.paidById]) {
+        balances[expense.paidById] = 0;
+      }
+
+      balances[expense.paidById] += expense.amount;
+
+      for (const participant of expense.participants) {
+
+        if (!balances[participant.userId]) {
+          balances[participant.userId] = 0;
+        }
+
+        balances[participant.userId] -= participant.shareAmount;
+      }
+    }
+
+    const users = await prisma.user.findMany();
+
+    const result = users
+      .filter((user) => balances[user.id] !== undefined)
+      .map((user) => ({
+        user: user.name,
+        balance: balances[user.id],
+      }));
+
+    res.json({
+      success: true,
+      data: result,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
 
 module.exports = {
   createGroup,
   getMyGroups,
   addMember,
   getGroupMembers,
+    getBalances,
+
 };
