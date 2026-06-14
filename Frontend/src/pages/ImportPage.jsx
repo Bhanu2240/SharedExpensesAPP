@@ -1,94 +1,83 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../services/api";
 
-function Expenses() {
-  const [expenses, setExpenses] =
-    useState([]);
+function ImportPage() {
+  const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    api
-      .get("/expenses")
-      .then((res) =>
-        setExpenses(res.data.data)
-      );
-  }, []);
+  const uploadFile = async () => {
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    const res = await api.post(
+      "/import/csv",
+      formData
+    );
+
+    alert(
+      `Rows: ${res.data.totalRows}
+Issues: ${res.data.totalIssues}`
+    );
+  };
+
+  const processImport = async () => {
+    const res = await api.post(
+      "/import/process"
+    );
+
+    alert(
+      `Imported ${res.data.importedCount} expenses`
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-
-        <h2 className="text-3xl font-bold text-center mb-8">
-          Expenses
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8">
+        
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          CSV Import
         </h2>
 
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <p className="text-gray-500 mb-6">
+          Upload your expense CSV file and import it into the system.
+        </p>
 
-          {expenses.length === 0 ? (
-            <div className="p-6 text-center text-gray-500">
-              No expenses found
-            </div>
-          ) : (
-            <table className="w-full">
+        <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-500 transition">
+          <input
+            type="file"
+            accept=".csv"
+            onChange={(e) =>
+              setFile(e.target.files[0])
+            }
+            className="w-full text-gray-600"
+          />
 
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="p-4 text-left">
-                    Title
-                  </th>
-
-                  <th className="p-4 text-left">
-                    Amount
-                  </th>
-
-                  <th className="p-4 text-left">
-                    Paid By
-                  </th>
-
-                  <th className="p-4 text-left">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {expenses.map(
-                  (expense) => (
-                    <tr
-                      key={expense.id}
-                      className="border-t hover:bg-gray-50"
-                    >
-                      <td className="p-4 font-medium">
-                        {expense.title}
-                      </td>
-
-                      <td className="p-4 text-green-600 font-semibold">
-                        ₹{expense.amount}
-                      </td>
-
-                      <td className="p-4">
-                        {expense.paidBy?.name}
-                      </td>
-
-                      <td className="p-4 text-gray-600">
-                        {new Date(
-                          expense.expenseDate
-                        ).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  )
-                )}
-
-              </tbody>
-
-            </table>
+          {file && (
+            <p className="mt-3 text-sm text-green-600 font-medium">
+              Selected: {file.name}
+            </p>
           )}
-
         </div>
 
+        <div className="mt-6 space-y-4">
+          <button
+            onClick={uploadFile}
+            disabled={!file}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            Upload CSV
+          </button>
+
+          <button
+            onClick={processImport}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
+          >
+            Process Import
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-export default Expenses;
+export default ImportPage;
