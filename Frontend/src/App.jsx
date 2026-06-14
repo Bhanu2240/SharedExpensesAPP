@@ -11,6 +11,7 @@ import IssuesPage from "./pages/IssuesPage";
 import Balances from "./pages/Balances";
 import Settlements from "./pages/Settlements";
 import Expenses from "./pages/Expenses";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -49,6 +50,10 @@ function App() {
 <Route
   path="/expenses"
   element={<Expenses />}
+/>
+<Route
+  path="/register"
+  element={<Register />}
 />
 
       </Routes>
