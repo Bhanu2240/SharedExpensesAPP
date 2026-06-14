@@ -110,3 +110,55 @@ PORT=
 ## AI Usage
 
 Development was assisted using ChatGPT. All generated code was reviewed, modified, tested, and integrated manually.
+
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions to automate Continuous Integration (CI).
+
+### Continuous Integration (CI)
+
+The pipeline is triggered automatically on:
+
+* Push to the `main` branch
+* Push to the `develop` branch
+* Pull Requests targeting the `main` branch
+
+### Backend Validation
+
+The CI workflow performs the following checks:
+
+* Install project dependencies
+* Generate Prisma Client
+* Run linting checks (if configured)
+
+### Frontend Validation
+
+The CI workflow performs the following checks:
+
+* Install project dependencies
+* Build the React application
+* Verify that the production build succeeds
+
+### Benefits
+
+* Prevents broken code from being merged
+* Ensures frontend builds successfully
+* Validates backend dependencies and Prisma setup
+* Maintains code quality through automated checks
+
+### Workflow File
+
+The GitHub Actions workflow is located at:
+
+```text
+.github/workflows/ci.yml
+```
+
+### Future Improvements
+
+* Automated testing
+* Automated Docker image builds
+* Continuous Deployment (CD) to production environments
+* Security and dependency vulnerability scanning
+
