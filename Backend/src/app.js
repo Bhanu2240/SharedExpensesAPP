@@ -11,7 +11,15 @@ const dashboardRoutes =require("./routes/dashboard.routes");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://sharedexpensesapp-1.onrender.com",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/api/test", testRoutes);
 app.use("/api/auth", authRoutes);
