@@ -162,3 +162,6 @@ The GitHub Actions workflow is located at:
 * Continuous Deployment (CD) to production environments
 * Security and dependency vulnerability scanning
 
+  ### Live Demo
+  https://sharedexpensesapp-1.onrender.com
+
